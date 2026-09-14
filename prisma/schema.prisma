@@ -1,0 +1,175 @@
+// Prisma schema for Travel Planner
+// SQLite is used for simplicity in this first version — trips, travelers,
+// and all planning data are persisted to a local database file. The schema
+// is written to be easy to later migrate to Postgres/MySQL if needed.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A person using the app. There's no password-based auth in this version —
+// a lightweight cookie-based identity is used instead (see src/lib/identity),
+// which keeps the door open for real auth later without changing the schema.
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  avatarColor String @default("#0ea5e9")
+  createdAt DateTime @default(now())
+
+  ownedTrips    Trip[]        @relation("TripOwner")
+  memberships   TripMember[]
+  expensesPaid  Expense[]
+}
+
+model Trip {
+  id          String     @id @default(cuid())
+  name        String
+  destination String
+  startDate   DateTime?
+  endDate     DateTime?
+  coverImage  String?
+  description String?
+  status      String     @default("planning") // planning | booked | in_progress | completed
+  ownerId     String
+  owner       User       @relation("TripOwner", fields: [ownerId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  members         TripMember[]
+  bucketListItems BucketListItem[]
+  flights         Flight[]
+  packingItems    PackingItem[]
+  itineraryEvents ItineraryEvent[]
+  accommodations  Accommodation[]
+  expenses        Expense[]
+  notes           Note[]
+  shareLinks      ShareLink[]
+}
+
+model TripMember {
+  id       String   @id @default(cuid())
+  tripId   String
+  trip     Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  role     String   @default("editor") // owner | editor | viewer
+  joinedAt DateTime @default(now())
+
+  @@unique([tripId, userId])
+}
+
+model ShareLink {
+  id        String   @id @default(cuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  role      String   @default("editor") // editor | viewer
+  createdAt DateTime @default(now())
+}
+
+model BucketListItem {
+  id            String   @id @default(cuid())
+  tripId        String
+  trip          Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  name          String
+  location      String?
+  category      String   @default("other") // food | sightseeing | activity | shopping | nature | nightlife | culture | other
+  description   String?
+  photoUrl      String?
+  website       String?
+  priority      String   @default("medium") // low | medium | high
+  estimatedCost Float?
+  notes         String?
+  status        String   @default("want_to_visit") // want_to_visit | planned | completed
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  itineraryEvents ItineraryEvent[]
+}
+
+model Flight {
+  id                 String   @id @default(cuid())
+  tripId             String
+  trip               Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  type               String   @default("departure") // departure | return | other
+  airline            String
+  flightNumber       String
+  departureAirport   String
+  departureDateTime  DateTime
+  arrivalAirport     String
+  arrivalDateTime    DateTime
+  confirmationNumber String?
+  terminal           String?
+  gate               String?
+  notes              String?
+  createdAt          DateTime @default(now())
+}
+
+model PackingItem {
+  id        String   @id @default(cuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  name      String
+  category  String   @default("misc") // clothing | toiletries | electronics | documents | medication | essentials | misc
+  packed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ItineraryEvent {
+  id               String          @id @default(cuid())
+  tripId           String
+  trip             Trip            @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  title            String
+  startAt          DateTime
+  location         String?
+  notes            String?
+  sortOrder        Int             @default(0)
+  bucketListItemId String?
+  bucketListItem   BucketListItem? @relation(fields: [bucketListItemId], references: [id], onDelete: SetNull)
+  createdAt        DateTime        @default(now())
+}
+
+model Accommodation {
+  id                 String   @id @default(cuid())
+  tripId             String
+  trip               Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  name               String
+  address            String?
+  checkIn            DateTime
+  checkOut           DateTime
+  confirmationNumber String?
+  price              Float?
+  bookingLink        String?
+  notes              String?
+  createdAt          DateTime @default(now())
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  name      String
+  amount    Float
+  category  String   @default("other") // food | flights | hotel | transportation | activities | shopping | other
+  paidById  String?
+  paidBy    User?    @relation(fields: [paidById], references: [id])
+  date      DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  title     String?
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
