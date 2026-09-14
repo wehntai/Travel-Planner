@@ -51,3 +51,14 @@ export function formatTime(date: Date | string): string {
 export function formatDay(date: Date | string): string {
   return format(new Date(date), "EEEE, MMMM d");
 }
+
+export function formatDuration(start: Date | string, end: Date | string): string {
+  // Flights aren't timezone-aware here, so an international arrival time can
+  // read as numerically "before" departure (date-line crossing) — always
+  // show a sensible positive duration rather than a confusing negative one.
+  const minutes = Math.abs(Math.round((+new Date(end) - +new Date(start)) / 60_000));
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours <= 0) return `${mins}m`;
+  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+}

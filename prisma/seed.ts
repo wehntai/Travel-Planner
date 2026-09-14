@@ -158,7 +158,7 @@ async function main() {
         departureAirport: "HND",
         departureDateTime: new Date("2027-04-24T17:30:00"),
         arrivalAirport: "SFO",
-        arrivalDateTime: new Date("2027-04-24T11:05:00"),
+        arrivalDateTime: new Date("2027-04-25T02:55:00"),
         confirmationNumber: "ANA-88213X",
       },
     ],
