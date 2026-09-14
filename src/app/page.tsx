@@ -1,7 +1,9 @@
+import { Container } from "@/components/layout/container";
+
 export default function Home() {
   return (
-    <div className="flex flex-1 items-center justify-center">
-      <p className="text-zinc-500">Travel Planner is under construction.</p>
-    </div>
+    <Container className="flex flex-1 items-center justify-center py-24 text-center">
+      <p className="text-muted-foreground">Your trips will show up here.</p>
+    </Container>
   );
 }
