@@ -1,7 +1,5 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
 import { Plus } from "lucide-react";
 import {
   Dialog,
@@ -17,17 +15,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createTrip, type CreateTripState } from "@/app/actions/trips";
+import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
 
 const initialState: CreateTripState = {};
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending}>
-      {pending ? "Creating…" : "Create Trip"}
-    </Button>
-  );
-}
 
 export function NewTripDialog({
   needsIdentity,
@@ -36,9 +26,11 @@ export function NewTripDialog({
   needsIdentity: boolean;
   trigger?: React.ReactNode;
 }) {
-  const [state, formAction] = useActionState(createTrip, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
-  const [open, setOpen] = useState(false);
+  const { open, setOpen } = useControllableOpen();
+  // createTrip redirects to the new trip on success instead of returning
+  // { success: true }, so there's no onSuccess close/toast to run here —
+  // the navigation away is the success signal.
+  const { state, isPending, handleSubmit } = useSubmitAction(createTrip, initialState, () => {});
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -57,7 +49,7 @@ export function NewTripDialog({
             Give it a name and destination — you can fill in the rest later.
           </DialogDescription>
         </DialogHeader>
-        <form ref={formRef} action={formAction} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {needsIdentity && (
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="yourName">Your name</Label>
@@ -124,14 +116,12 @@ export function NewTripDialog({
           {state.error && <p className="text-sm text-danger">{state.error}</p>}
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setOpen(false)}
-            >
+            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <SubmitButton />
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating…" : "Create Trip"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
