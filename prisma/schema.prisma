@@ -1,7 +1,7 @@
 // Prisma schema for Travel Planner
-// SQLite is used for simplicity in this first version — trips, travelers,
-// and all planning data are persisted to a local database file. The schema
-// is written to be easy to later migrate to Postgres/MySQL if needed.
+// Postgres (hosted on Neon) is the datasource -- serverless deploy targets
+// like Vercel have a read-only/ephemeral filesystem in production, so a
+// file-based SQLite database (the original choice) can't persist writes.
 
 // Using the classic prisma-client-js generator (default output into
 // node_modules/@prisma/client) instead of the newer prisma-client
@@ -25,7 +25,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

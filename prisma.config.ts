@@ -4,13 +4,14 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-// A plain process.env read (never throws) with a fallback, instead of
-// prisma/config's own env() helper — that helper throws immediately at
-// config-load time if the variable is unset, which broke `prisma generate`
-// on deploy platforms that inject DATABASE_URL only at runtime, not during
-// the build step. generate doesn't need a live connection at all, just the
-// schema, so a placeholder here is harmless; schema.prisma's own
-// `url = env("DATABASE_URL")` is what actually matters at runtime.
+// A plain process.env read (never throws) with a placeholder fallback,
+// instead of prisma/config's own env() helper — that helper throws
+// immediately at config-load time if the variable is unset, which broke
+// `prisma generate` on deploy platforms that inject DATABASE_URL only at
+// runtime, not during the build step. generate doesn't need a live
+// connection at all, just the schema, so the placeholder is never actually
+// connected to; schema.prisma's own `url = env("DATABASE_URL")` is what
+// matters at runtime.
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
@@ -19,6 +20,6 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: process.env.DATABASE_URL ?? "file:./dev.db",
+    url: process.env.DATABASE_URL ?? "postgresql://placeholder@localhost:5432/placeholder",
   },
 });
