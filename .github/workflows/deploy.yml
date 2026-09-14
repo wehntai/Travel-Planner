@@ -1,0 +1,66 @@
+name: Build and deploy
+
+# Bonto's container only has ~512MB of memory, which isn't enough to run
+# `next build` (peak usage is closer to 1.3GB). So the build happens here,
+# in CI, where memory isn't a constraint, and the result is pushed to a
+# `deploy` branch containing the compiled `.next` output plus a `start`
+# script that just runs the already-built app. Point Bonto at the `deploy`
+# branch (not `main`) so it never has to build anything itself.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: file:./dev.db
+
+      - name: Publish build to the deploy branch
+        run: |
+          set -e
+          rm -rf .next/cache
+
+          # Bonto only ever runs `scripts.start` and never a separate
+          # build step, so the deploy branch's start script skips the
+          # build entirely -- the `.next` we're about to commit is already
+          # built.
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.scripts.start = 'prisma migrate deploy && next start';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout --orphan deploy
+          git add -A
+          git add -f .next
+          git commit -m "deploy: build from ${GITHUB_SHA}"
+          git push origin deploy --force
