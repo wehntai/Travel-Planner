@@ -47,8 +47,6 @@ async function main() {
       destination: "Tokyo → Kyoto → Osaka",
       startDate: new Date("2027-04-10"),
       endDate: new Date("2027-04-24"),
-      coverImage:
-        "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&q=80",
       description:
         "Two weeks of cherry blossoms, ramen, and temples. Tokyo first, then the bullet train down to Kyoto and Osaka.",
       status: "planning",
@@ -311,8 +309,6 @@ async function main() {
       destination: "Lisbon, Portugal",
       startDate: new Date("2026-03-05"),
       endDate: new Date("2026-03-09"),
-      coverImage:
-        "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1200&q=80",
       description: "A quick escape for pastel de nata and miradouro sunsets.",
       status: "completed",
       ownerId: alex.id,
@@ -348,8 +344,6 @@ async function main() {
       destination: "Reykjavík and the Ring Road",
       startDate: daysFromNow(120),
       endDate: daysFromNow(130),
-      coverImage:
-        "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=1200&q=80",
       description: "Road trip around the whole island — waterfalls, glaciers, hot springs.",
       status: "planning",
       ownerId: sam.id,
