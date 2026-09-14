@@ -19,7 +19,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { createFlight, updateFlight, type FlightFormState } from "@/app/actions/flights";
 import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
 import { FLIGHT_TYPES } from "@/lib/constants";
-import type { Flight } from "@/generated/prisma/client";
+import type { Flight } from "@prisma/client";
 
 const initialState: FlightFormState = {};
 

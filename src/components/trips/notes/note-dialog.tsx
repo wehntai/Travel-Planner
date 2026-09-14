@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createNote, updateNote, type NoteFormState } from "@/app/actions/notes";
 import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
-import type { Note } from "@/generated/prisma/client";
+import type { Note } from "@prisma/client";
 
 const initialState: NoteFormState = {};
 

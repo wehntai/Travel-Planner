@@ -28,7 +28,7 @@ import {
   type ItineraryFormState,
 } from "@/app/actions/itinerary";
 import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
-import type { ItineraryEvent, BucketListItem } from "@/generated/prisma/client";
+import type { ItineraryEvent, BucketListItem } from "@prisma/client";
 
 const initialState: ItineraryFormState = {};
 

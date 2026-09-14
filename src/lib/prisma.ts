@@ -1,5 +1,5 @@
 import path from "node:path";
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 // The sqlite file: URL in DATABASE_URL is meant to be relative to the
 // `prisma/` directory (matching how the Prisma CLI resolves it for

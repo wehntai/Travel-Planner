@@ -10,7 +10,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { removeMember, updateMemberRole } from "@/app/actions/sharing";
 import { labelFor, MEMBER_ROLES } from "@/lib/constants";
-import type { TripMember, User } from "@/generated/prisma/client";
+import type { TripMember, User } from "@prisma/client";
 
 export function TravelerRow({
   tripId,

@@ -28,7 +28,7 @@ import {
 } from "@/app/actions/bucket-list";
 import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
 import { BUCKET_CATEGORIES, BUCKET_STATUSES, PRIORITIES } from "@/lib/constants";
-import type { BucketListItem } from "@/generated/prisma/client";
+import type { BucketListItem } from "@prisma/client";
 
 const initialState: BucketListFormState = {};
 

@@ -3,9 +3,19 @@
 // and all planning data are persisted to a local database file. The schema
 // is written to be easy to later migrate to Postgres/MySQL if needed.
 
+// Using the classic prisma-client-js generator (default output into
+// node_modules/@prisma/client) instead of the newer prisma-client
+// generator's custom TS-source output. The custom-output generator kept
+// getting bundled as regular app source by Next.js's bundler (Turbopack
+// and webpack alike), which froze its native query-engine lookup to
+// wherever the build happened to run -- breaking on every deploy target
+// we tried (Bonto, then Vercel), across several different fix attempts.
+// The classic generator's output lives in node_modules, so Next.js's
+// `serverExternalPackages: ["@prisma/client"]` (see next.config.ts)
+// externalizes it properly: no bundling, no frozen paths, just a normal
+// `require()` resolved live at runtime.
 generator client {
-  provider      = "prisma-client"
-  output        = "../src/generated/prisma"
+  provider      = "prisma-client-js"
   // Vercel's build container and its actual Lambda runtime use different
   // base images (Debian-based build vs. RHEL-based Amazon Linux at
   // runtime), so the engine "prisma generate" produces during the build

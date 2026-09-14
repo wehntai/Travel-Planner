@@ -12,7 +12,7 @@ import { EmptyState } from "@/components/empty-state";
 import { createPackingItem, togglePackingItem, deletePackingItem } from "@/app/actions/packing";
 import { PACKING_CATEGORIES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import type { PackingItem } from "@/generated/prisma/client";
+import type { PackingItem } from "@prisma/client";
 
 export function PackingView({ tripId, items }: { tripId: string; items: PackingItem[] }) {
   const [optimisticItems, setOptimisticItems] = useOptimistic(

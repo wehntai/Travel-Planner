@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { formatCurrency } from "@/lib/format";
 import { EXPENSE_CATEGORIES } from "@/lib/constants";
-import type { Expense, User } from "@/generated/prisma/client";
+import type { Expense, User } from "@prisma/client";
 
 export function ExpenseSummary({
   expenses,

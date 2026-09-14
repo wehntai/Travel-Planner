@@ -18,7 +18,7 @@ import { PriorityBadge, CategoryBadge } from "@/components/trips/bucket-list/bad
 import { deleteBucketListItem, setBucketListItemStatus } from "@/app/actions/bucket-list";
 import { BUCKET_STATUSES } from "@/lib/constants";
 import { formatCurrency } from "@/lib/format";
-import type { BucketListItem } from "@/generated/prisma/client";
+import type { BucketListItem } from "@prisma/client";
 
 export function BucketItemCard({ tripId, item }: { tripId: string; item: BucketListItem }) {
   const [isPending, startTransition] = useTransition();

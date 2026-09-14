@@ -19,7 +19,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { createExpense, updateExpense, type ExpenseFormState } from "@/app/actions/expenses";
 import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
 import { EXPENSE_CATEGORIES } from "@/lib/constants";
-import type { Expense, User } from "@/generated/prisma/client";
+import type { Expense, User } from "@prisma/client";
 
 const initialState: ExpenseFormState = {};
 

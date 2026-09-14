@@ -14,7 +14,7 @@ import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { ItineraryEventDialog } from "@/components/trips/itinerary/itinerary-event-dialog";
 import { deleteItineraryEvent, moveItineraryEvent } from "@/app/actions/itinerary";
 import { formatTime } from "@/lib/dates";
-import type { ItineraryEvent, BucketListItem } from "@/generated/prisma/client";
+import type { ItineraryEvent, BucketListItem } from "@prisma/client";
 
 export function ItineraryEventCard({
   tripId,

@@ -16,7 +16,7 @@ import { FlightDialog } from "@/components/trips/flights/flight-dialog";
 import { deleteFlight } from "@/app/actions/flights";
 import { formatDate, formatTime, formatDuration } from "@/lib/dates";
 import { labelFor, FLIGHT_TYPES } from "@/lib/constants";
-import type { Flight } from "@/generated/prisma/client";
+import type { Flight } from "@prisma/client";
 
 export function FlightCard({ tripId, flight }: { tripId: string; flight: Flight }) {
   const [editOpen, setEditOpen] = useState(false);

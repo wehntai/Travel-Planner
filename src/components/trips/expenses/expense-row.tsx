@@ -17,7 +17,7 @@ import { deleteExpense } from "@/app/actions/expenses";
 import { formatDate } from "@/lib/dates";
 import { formatCurrency } from "@/lib/format";
 import { EXPENSE_CATEGORIES } from "@/lib/constants";
-import type { Expense, User } from "@/generated/prisma/client";
+import type { Expense, User } from "@prisma/client";
 
 export function ExpenseRow({
   tripId,

@@ -21,7 +21,7 @@ import {
   type AccommodationFormState,
 } from "@/app/actions/accommodations";
 import { useSubmitAction, useControllableOpen } from "@/hooks/use-dialog-form";
-import type { Accommodation } from "@/generated/prisma/client";
+import type { Accommodation } from "@prisma/client";
 
 const initialState: AccommodationFormState = {};
 

@@ -14,7 +14,7 @@ import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { NoteDialog } from "@/components/trips/notes/note-dialog";
 import { deleteNote } from "@/app/actions/notes";
 import { formatDate } from "@/lib/dates";
-import type { Note } from "@/generated/prisma/client";
+import type { Note } from "@prisma/client";
 
 export function NoteCard({ tripId, note }: { tripId: string; note: Note }) {
   const [editOpen, setEditOpen] = useState(false);

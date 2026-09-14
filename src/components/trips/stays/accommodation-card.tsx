@@ -16,7 +16,7 @@ import { AccommodationDialog } from "@/components/trips/stays/accommodation-dial
 import { deleteAccommodation } from "@/app/actions/accommodations";
 import { formatDate } from "@/lib/dates";
 import { formatCurrency } from "@/lib/format";
-import type { Accommodation } from "@/generated/prisma/client";
+import type { Accommodation } from "@prisma/client";
 
 export function AccommodationCard({ tripId, stay }: { tripId: string; stay: Accommodation }) {
   const [editOpen, setEditOpen] = useState(false);

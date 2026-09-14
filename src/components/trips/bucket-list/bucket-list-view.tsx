@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { BucketItemCard } from "@/components/trips/bucket-list/bucket-item-card";
 import { BucketItemDialog } from "@/components/trips/bucket-list/bucket-item-dialog";
 import { BUCKET_CATEGORIES, BUCKET_STATUSES } from "@/lib/constants";
-import type { BucketListItem } from "@/generated/prisma/client";
+import type { BucketListItem } from "@prisma/client";
 
 const PRIORITY_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 };
 
