@@ -1,12 +1,21 @@
-import { Luggage } from "lucide-react";
-import { ComingSoon } from "@/components/trips/coming-soon";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { getTrip } from "@/lib/data/trips";
+import { PackingView } from "@/components/trips/packing/packing-view";
 
-export default function PackingPage() {
-  return (
-    <ComingSoon
-      icon={Luggage}
-      title="Packing checklist is on its way"
-      description="Soon you'll be able to build and check off your packing list for this trip."
-    />
-  );
+export default async function PackingPage({
+  params,
+}: {
+  params: Promise<{ tripId: string }>;
+}) {
+  const { tripId } = await params;
+  const trip = await getTrip(tripId);
+  if (!trip) notFound();
+
+  const items = await prisma.packingItem.findMany({
+    where: { tripId },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return <PackingView tripId={tripId} items={items} />;
 }
