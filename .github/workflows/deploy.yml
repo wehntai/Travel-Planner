@@ -3,9 +3,10 @@ name: Build and deploy
 # Bonto's container only has ~512MB of memory, which isn't enough to run
 # `next build` (peak usage is closer to 1.3GB). So the build happens here,
 # in CI, where memory isn't a constraint, and the result is pushed to a
-# `deploy` branch containing the compiled `.next` output plus a `start`
-# script that just runs the already-built app. Point Bonto at the `deploy`
-# branch (not `main`) so it never has to build anything itself.
+# `deploy` branch containing the standalone build output (see `output:
+# "standalone"` in next.config.ts) plus a `start` script that just runs
+# the already-built server. Point Bonto at the `deploy` branch (not
+# `main`) so it never has to build anything itself.
 
 on:
   push:
@@ -43,16 +44,16 @@ jobs:
       - name: Publish build to the deploy branch
         run: |
           set -e
-          rm -rf .next/cache
 
           # Bonto only ever runs `scripts.start` and never a separate
           # build step, so the deploy branch's start script skips the
-          # build entirely -- the `.next` we're about to commit is already
-          # built.
+          # build entirely -- .next/standalone we're about to commit is
+          # already built and self-contained (its own node_modules,
+          # public/, and .next/static, per `npm run build`).
           node -e "
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-            pkg.scripts.start = 'prisma migrate deploy && next start';
+            pkg.scripts.start = 'prisma migrate deploy && node .next/standalone/server.js';
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
 
@@ -61,6 +62,6 @@ jobs:
 
           git checkout --orphan deploy
           git add -A
-          git add -f .next
+          git add -f .next/standalone
           git commit -m "deploy: build from ${GITHUB_SHA}"
           git push origin deploy --force
