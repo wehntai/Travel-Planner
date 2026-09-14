@@ -97,7 +97,7 @@ export function FlightDialog({
 
           <div className="rounded-xl border border-border p-3">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Departure</p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="departureAirport">Airport</Label>
                 <Input
@@ -126,7 +126,7 @@ export function FlightDialog({
 
           <div className="rounded-xl border border-border p-3">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Arrival</p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="arrivalAirport">Airport</Label>
                 <Input
@@ -155,7 +155,7 @@ export function FlightDialog({
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="confirmationNumber">Confirmation #</Label>
               <Input id="confirmationNumber" name="confirmationNumber" defaultValue={flight?.confirmationNumber ?? ""} />
