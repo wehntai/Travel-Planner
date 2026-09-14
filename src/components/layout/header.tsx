@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { Compass } from "lucide-react";
 import { Container } from "@/components/layout/container";
+import { NewTripDialog } from "@/components/trips/new-trip-dialog";
+import { getCurrentUser } from "@/lib/identity";
 
-export function Header() {
+export async function Header() {
+  const currentUser = await getCurrentUser();
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between">
@@ -12,6 +16,7 @@ export function Header() {
           </span>
           Wayfarer
         </Link>
+        <NewTripDialog needsIdentity={!currentUser} />
       </Container>
     </header>
   );
