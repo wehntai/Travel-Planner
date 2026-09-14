@@ -6,6 +6,7 @@ import { TripStatusBadge } from "@/components/trips/trip-status-badge";
 import { Share2 } from "lucide-react";
 import { CoverArt } from "@/components/trips/cover-art";
 import { ShareDialog } from "@/components/trips/share-dialog";
+import { TripOptionsMenu } from "@/components/trips/trip-options-menu";
 import { Button } from "@/components/ui/button";
 import { formatDateRange } from "@/lib/dates";
 import { getOrCreateShareLinks } from "@/lib/data/sharing";
@@ -60,6 +61,7 @@ export async function TripBanner({ trip }: { trip: Trip }) {
                 </Button>
               }
             />
+            <TripOptionsMenu trip={trip} />
           </div>
         </div>
         <h1 className="font-display text-3xl font-medium text-white sm:text-4xl">{trip.name}</h1>

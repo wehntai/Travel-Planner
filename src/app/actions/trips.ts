@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import type { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, IDENTITY_COOKIE } from "@/lib/identity";
 import { tripFormSchema } from "@/lib/validations/trip";
@@ -12,6 +13,15 @@ export type CreateTripState = {
   error?: string;
   fieldErrors?: Partial<Record<string, string>>;
 };
+
+function fieldErrorsFrom(error: ZodError) {
+  const fieldErrors: Partial<Record<string, string>> = {};
+  for (const issue of error.issues) {
+    const key = issue.path[0]?.toString();
+    if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
+  }
+  return fieldErrors;
+}
 
 export async function createTrip(
   _prevState: CreateTripState,
@@ -84,4 +94,55 @@ export async function createTrip(
 
   revalidatePath("/");
   redirect(`/trips/${trip.id}`);
+}
+
+export type UpdateTripState = {
+  error?: string;
+  fieldErrors?: Partial<Record<string, string>>;
+  success?: boolean;
+};
+
+export async function updateTrip(
+  tripId: string,
+  _prevState: UpdateTripState,
+  formData: FormData,
+): Promise<UpdateTripState> {
+  const parsed = tripFormSchema.safeParse({
+    name: formData.get("name")?.toString() ?? "",
+    destination: formData.get("destination")?.toString() ?? "",
+    startDate: formData.get("startDate")?.toString() ?? "",
+    endDate: formData.get("endDate")?.toString() ?? "",
+    description: formData.get("description")?.toString() ?? "",
+    coverImage: formData.get("coverImage")?.toString() ?? "",
+    status: formData.get("status")?.toString() ?? "planning",
+  });
+
+  if (!parsed.success) {
+    return { error: "Please fix the highlighted fields.", fieldErrors: fieldErrorsFrom(parsed.error) };
+  }
+
+  const data = parsed.data;
+
+  await prisma.trip.update({
+    where: { id: tripId },
+    data: {
+      name: data.name,
+      destination: data.destination,
+      startDate: data.startDate ? new Date(data.startDate) : null,
+      endDate: data.endDate ? new Date(data.endDate) : null,
+      description: data.description || null,
+      coverImage: data.coverImage || null,
+      status: data.status,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath(`/trips/${tripId}`);
+  return { success: true };
+}
+
+export async function deleteTrip(tripId: string) {
+  await prisma.trip.delete({ where: { id: tripId } });
+  revalidatePath("/");
+  redirect("/");
 }

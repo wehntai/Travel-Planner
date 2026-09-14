@@ -41,7 +41,20 @@ export function ConfirmDeleteDialog({
         await onConfirm();
         toast.success(successMessage);
         setOpen(false);
-      } catch {
+      } catch (err) {
+        // A server action that redirects on success (e.g. deleting a whole
+        // trip and sending the user home) throws a special Next.js error to
+        // trigger the navigation — let that propagate instead of treating it
+        // as a failure.
+        if (
+          err &&
+          typeof err === "object" &&
+          "digest" in err &&
+          typeof err.digest === "string" &&
+          err.digest.startsWith("NEXT_REDIRECT")
+        ) {
+          throw err;
+        }
         toast.error("Something went wrong. Please try again.");
       }
     });
