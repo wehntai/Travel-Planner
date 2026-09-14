@@ -4,8 +4,14 @@
 // is written to be easy to later migrate to Postgres/MySQL if needed.
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client"
+  output        = "../src/generated/prisma"
+  // Vercel's build container and its actual Lambda runtime use different
+  // base images (Debian-based build vs. RHEL-based Amazon Linux at
+  // runtime), so the engine "prisma generate" produces during the build
+  // doesn't match what the running function needs. Generating both keeps
+  // it working locally/in CI (native) and on Vercel (rhel-openssl-3.0.x).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
